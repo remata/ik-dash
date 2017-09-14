@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  php:
+    build:
+      context: ./Dockerfiles/php
+      dockerfile: ./Dockerfile
+    container_name: dash-web
+    links:
+      - db
+    ports:
+      - "80:80"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: dash-phpmyadmin
+    links:
+      - db
+    ports:
+      - "8080:80"
+    environment:
+      - MYSQL_ROOT_PASSWORD=dbroot
+
+  db:
+    build:
+      context: ./Dockerfiles/db
+      dockerfile: ./Dockerfile
+    container_name: dash-db
+    ports:
+      - "3306:3306"
+    volumes:
+      - dashDbVol:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=dbroot
+      - MYSQL_DATABASE=dash
+      - MYSQL_USER=dash
+      - MYSQL_PASSWORD=dash123
+
+volumes:
+  dashDbVol:
